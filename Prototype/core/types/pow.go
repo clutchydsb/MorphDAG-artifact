@@ -56,11 +56,11 @@ func (pow *ProofOfWork) prepareData(nonce int) []byte {
 }
 
 // Run performs a proof-of-work
-func (pow *ProofOfWork) Run(con int) (int, []byte) {
+func (pow *ProofOfWork) Run(con, nodeNumber int) (int, []byte) {
 	var hashInt big.Int
 	var hash [32]byte
 	nonce := 0
-	rounds := int(math.Floor(math.Pow(2, float64(config.TargetBits)) / config.NodeNumber))
+	rounds := int(math.Floor(math.Pow(2, float64(config.TargetBits)) / float64(nodeNumber)))
 	find := false
 
 	fmt.Println("Mining a new block")

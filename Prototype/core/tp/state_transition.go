@@ -275,7 +275,7 @@ func mimicExecution(ops int) {
 	var a, b, c int
 	a, b, c = 1, 1, 1
 
-	for i := 0; i < ops*1000; i++ {
+	for i := 0; i < ops*400; i++ {
 		a += b
 		b += a
 		c += a

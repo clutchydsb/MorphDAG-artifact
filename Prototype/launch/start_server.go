@@ -40,6 +40,30 @@ func init() {
 	}
 
 	if !cmd.Config {
+		// initialize DAG blockchain
+		dagServer = p2p.InitializeServer(nodeID, cmd.NodeNumber)
+		if !cmd.TxSender {
+			dagServer.CreateDAG()
+		}
+
+		// start the rpc server
+		rpcServer := p2p.StartRPCServer(dagServer)
+		err = rpc.Register(rpcServer)
+		if err != nil {
+			log.Fatal("Wrong format of service!", err)
+		}
+
+		rpc.HandleHTTP()
+
+		listener, err := net.Listen("tcp", "localhost:"+strconv.Itoa(cmd.RPCPort))
+		if err != nil {
+			log.Fatal("Listen error: ", err)
+		}
+
+		log.Printf("RPC server listening on port %d", cmd.RPCPort)
+		go http.Serve(listener, nil)
+
+		// start the p2p connection
 		txHandler := dagServer.ProcessTx
 		blkHandler := dagServer.ProcessBlock
 		signalHandler := dagServer.ProcessRunSignal
@@ -71,29 +95,6 @@ func init() {
 		fmt.Printf("Successfully connect to the connected peers, %s th node\n", nodeID)
 
 		time.Sleep(10 * time.Second)
-
-		// initialize DAG blockchain
-		dagServer = p2p.InitializeServer(nodeID)
-		if !cmd.TxSender {
-			dagServer.CreateDAG()
-		}
-
-		// start the rpc server
-		rpcServer := p2p.StartRPCServer(dagServer)
-		err = rpc.Register(rpcServer)
-		if err != nil {
-			log.Fatal("Wrong format of service!", err)
-		}
-
-		rpc.HandleHTTP()
-
-		listener, err := net.Listen("tcp", "localhost:"+strconv.Itoa(cmd.RPCPort))
-		if err != nil {
-			log.Fatal("Listen error: ", err)
-		}
-
-		log.Printf("RPC server listening on port %d", cmd.RPCPort)
-		go http.Serve(listener, nil)
 	}
 }
 

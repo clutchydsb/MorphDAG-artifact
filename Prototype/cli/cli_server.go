@@ -11,6 +11,7 @@ type CMDServer struct {
 	P2PPort       int
 	RPCPort       int
 	Cycles        int
+	NodeNumber    int
 	NodeFile      string
 	Pid1          string
 	Pid2          string
@@ -44,6 +45,13 @@ func (cmd *CMDServer) Run(nodeID string) {
 				Usage:       "Number of cycles to run",
 				Value:       30,
 				Destination: &cmd.Cycles,
+			},
+			&cli.IntFlag{
+				Name:        "number",
+				Aliases:     []string{"n"},
+				Usage:       "Number of nodes",
+				Value:       100,
+				Destination: &cmd.NodeNumber,
 			},
 			&cli.StringFlag{
 				Name:        "nodefile",

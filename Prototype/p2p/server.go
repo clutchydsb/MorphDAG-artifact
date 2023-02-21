@@ -26,12 +26,12 @@ type Server struct {
 	TxPool          *TxPool
 	StateDB         *state.StateDB
 	State           []byte
+	NodeNumber      int
 	Concurrency     int
 	ProcessingQueue map[string][]*types.Transaction
 	CompletedQueue  map[string][]*types.Transaction
-	//StartSignalNum  int32
-	RunSignalNum int32
-	StartOrRun   bool
+	RunSignalNum    int32
+	StartOrRun      bool
 }
 
 // define the sending format of block
@@ -49,7 +49,7 @@ type tx struct {
 var loadScale int
 var rwMu sync.RWMutex
 
-func InitializeServer(nodeID string) *Server {
+func InitializeServer(nodeID string, nodeNumber int) *Server {
 	dbFile := fmt.Sprintf(config.DBfile2, nodeID)
 	stateDB, err := state.NewState(dbFile, nil)
 	if err != nil {
@@ -63,12 +63,12 @@ func InitializeServer(nodeID string) *Server {
 		TxPool:          NewTxPool(),
 		StateDB:         stateDB,
 		State:           []byte{},
+		NodeNumber:      nodeNumber,
 		Concurrency:     config.InitialConcurrency,
 		ProcessingQueue: make(map[string][]*types.Transaction),
 		CompletedQueue:  make(map[string][]*types.Transaction),
-		//StartSignalNum:  0,
-		RunSignalNum: 0,
-		StartOrRun:   false,
+		RunSignalNum:    0,
+		StartOrRun:      false,
 	}
 
 	return server
@@ -83,9 +83,6 @@ func (server *Server) CreateDAG() {
 // Run runs the MorphDAG protocol circularly
 func (server *Server) Run(cycles int) {
 	defer server.BC.DB.Close()
-	//server.sendStartSignal()
-	//for !server.StartOrRun {
-	//}
 	fmt.Printf("Server %s starts\n", server.NodeID)
 
 	// wait for 15 seconds for receiving sufficient transactions
@@ -186,7 +183,7 @@ func (server *Server) ProcessRunSignal(request []byte) {
 	signal := bytesToCommand(request)
 	if len(signal) > 0 {
 		atomic.AddInt32(&server.RunSignalNum, 1)
-		if atomic.LoadInt32(&server.RunSignalNum) >= config.NodeNumber-1 {
+		if atomic.LoadInt32(&server.RunSignalNum) >= int32(server.NodeNumber-1) {
 			server.StartOrRun = true
 			// reset the number counter
 			atomic.StoreInt32(&server.RunSignalNum, 0)
@@ -216,7 +213,7 @@ func (server *Server) sendRunSignal() {
 func (server *Server) mineBlock(con int) {
 	server.TxPool.RetrievePending()
 	txs := server.TxPool.Pick(config.BlockSize)
-	blk := server.BC.MineBlock(txs, con, server.State)
+	blk := server.BC.MineBlock(txs, con, server.NodeNumber, server.State)
 	if blk != nil {
 		data := block{server.NodeID, *blk}
 		bt, _ := json.Marshal(data)

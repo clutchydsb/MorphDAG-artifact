@@ -310,7 +310,7 @@ func (bc *Blockchain) GetCurrentBlocks() map[int][]*types.Block {
 }
 
 // MineBlock mines a new block with the provided transactions
-func (bc *Blockchain) MineBlock(transactions []*types.Transaction, con int, stateRoot []byte) *types.Block {
+func (bc *Blockchain) MineBlock(transactions []*types.Transaction, con, nodeNumber int, stateRoot []byte) *types.Block {
 	var latestEpoch int
 	var lastHash [][]byte
 	var newBlock *types.Block
@@ -327,9 +327,9 @@ func (bc *Blockchain) MineBlock(transactions []*types.Transaction, con int, stat
 
 	if latestEpoch == 0 || latestEpoch == 1 {
 		// if this epoch is the first or second round of mining
-		newBlock = types.NewBlock(transactions, rootHash, nil, latestEpoch+1, con)
+		newBlock = types.NewBlock(transactions, rootHash, nil, latestEpoch+1, con, nodeNumber)
 	} else {
-		newBlock = types.NewBlock(transactions, rootHash, stateRoot, latestEpoch+1, con)
+		newBlock = types.NewBlock(transactions, rootHash, stateRoot, latestEpoch+1, con, nodeNumber)
 	}
 
 	// if the miner mines a valid block in an epoch

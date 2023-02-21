@@ -24,7 +24,7 @@ type Block struct {
 }
 
 // NewBlock creates and returns Block
-func NewBlock(transactions []*Transaction, rootHash, stateRoot []byte, height, con int) *Block {
+func NewBlock(transactions []*Transaction, rootHash, stateRoot []byte, height, con, nodeNumber int) *Block {
 	block := &Block{
 		time.Now().Unix(),
 		transactions,
@@ -37,7 +37,7 @@ func NewBlock(transactions []*Transaction, rootHash, stateRoot []byte, height, c
 		0,
 		height}
 	pow := NewProofOfWork(block, con)
-	nonce, hash := pow.Run(con)
+	nonce, hash := pow.Run(con, nodeNumber)
 
 	if nonce == 0 {
 		return nil

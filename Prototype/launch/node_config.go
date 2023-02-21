@@ -1,7 +1,6 @@
 package main
 
 import (
-	"MorphDAG/config"
 	"flag"
 	"fmt"
 	"io/ioutil"
@@ -13,19 +12,21 @@ import (
 
 func main() {
 	var local bool
+	var nodeNumber int
+	flag.IntVar(&nodeNumber, "n", 100, "specify the number of nodes. defaults to 100.")
 	flag.BoolVar(&local, "le", true, "specify the node operating environment. defaults to true.")
 	flag.Parse()
 
 	if local {
-		CreateLocalNodeAddrs()
+		CreateLocalNodeAddrs(nodeNumber)
 	} else {
-		CreateRemoteNodeAddrs()
+		CreateRemoteNodeAddrs(nodeNumber)
 	}
 }
 
 // CreateLocalNodeAddrs creates node connection file for each node (in a local environment)
-func CreateLocalNodeAddrs() {
-	for i := 0; i < config.NodeNumber; i++ {
+func CreateLocalNodeAddrs(nodeNumber int) {
+	for i := 0; i < nodeNumber; i++ {
 		// each node runs one MorphDAG instance
 		fileName := fmt.Sprintf("../nodefile/nodeaddrs_%s.txt", strconv.Itoa(i))
 		file, err := os.OpenFile(fileName, os.O_RDWR|os.O_CREATE|os.O_TRUNC|os.O_APPEND, 0666)
@@ -33,7 +34,7 @@ func CreateLocalNodeAddrs() {
 			fmt.Printf("error: %v\n", err)
 		}
 
-		for j := i + 1; j < 100; j++ {
+		for j := i + 1; j < nodeNumber; j++ {
 			readName := fmt.Sprintf("../nodefile/config/fulladdrs_%s.txt", strconv.Itoa(j))
 			bs, err := ioutil.ReadFile(readName)
 			if err != nil {
@@ -56,7 +57,7 @@ func CreateLocalNodeAddrs() {
 		fmt.Printf("error: %v\n", err)
 	}
 
-	for i := 0; i < config.NodeNumber; i++ {
+	for i := 0; i < nodeNumber; i++ {
 		readName := fmt.Sprintf("../nodefile/config/fulladdrs_%s.txt", strconv.Itoa(i))
 		bs, err := ioutil.ReadFile(readName)
 		if err != nil {
@@ -73,9 +74,9 @@ func CreateLocalNodeAddrs() {
 }
 
 // CreateRemoteNodeAddrs creates node connection file for each node (in a distributed environment)
-func CreateRemoteNodeAddrs() {
+func CreateRemoteNodeAddrs(nodeNumber int) {
 	var count int
-	for i := 0; i < config.NodeNumber; i++ {
+	for i := 0; i < nodeNumber; i++ {
 		// each node runs two MorphDAG instances
 		if i%2 == 0 {
 			count++
@@ -86,7 +87,7 @@ func CreateRemoteNodeAddrs() {
 			fmt.Printf("error: %v\n", err)
 		}
 
-		for j := i + 1; j < 100; j++ {
+		for j := i + 1; j < nodeNumber; j++ {
 			readName := fmt.Sprintf("../nodefile/config/fulladdrs_%s.txt", strconv.Itoa(j))
 			bs, err := ioutil.ReadFile(readName)
 			if err != nil {
@@ -216,7 +217,7 @@ func CreateRemoteNodeAddrs() {
 		fmt.Printf("error: %v\n", err)
 	}
 
-	for i := 0; i < config.NodeNumber; i++ {
+	for i := 0; i < nodeNumber; i++ {
 		readName := fmt.Sprintf("../nodefile/config/fulladdrs_%s.txt", strconv.Itoa(i))
 		bs, err := ioutil.ReadFile(readName)
 		if err != nil {
