@@ -68,13 +68,13 @@ Step 4: run the client program of MorphDAG
 
 We use the first two remote machines to run client programs for tx sending and observation by default.
 
-Step 4: kill the server and client programs
+Step 5: kill the server and client programs
 
 ```
 ./kill.sh
 ```
 
-Step 5: download the experimental results
+Step 6: download the experimental results
 
 ```
 ./download.sh
