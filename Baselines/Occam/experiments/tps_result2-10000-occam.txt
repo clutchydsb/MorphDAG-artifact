@@ -1,0 +1,12 @@
+Time: 1667404855, number of blocks: 6, average latency: 17.00, average tps: 323.76, average Mbps: 2.10 
+Time: 1667404866, number of blocks: 10, average latency: 21.00, average tps: 435.19, average Mbps: 2.82 
+Time: 1667404875, number of blocks: 14, average latency: 26.00, average tps: 478.54, average Mbps: 3.10 
+Time: 1667404890, number of blocks: 56, average latency: 37.00, average tps: 734.76, average Mbps: 4.76 
+Time: 1667404908, number of blocks: 50, average latency: 47.00, average tps: 698.28, average Mbps: 4.53 
+Time: 1667404927, number of blocks: 53, average latency: 54.00, average tps: 603.07, average Mbps: 3.91 
+Time: 1667404944, number of blocks: 54, average latency: 55.00, average tps: 583.53, average Mbps: 3.78 
+Time: 1667404962, number of blocks: 57, average latency: 56.00, average tps: 573.11, average Mbps: 3.72 
+Time: 1667404978, number of blocks: 52, average latency: 54.00, average tps: 550.02, average Mbps: 3.57 
+Time: 1667404994, number of blocks: 51, average latency: 52.00, average tps: 556.58, average Mbps: 3.61 
+
+586.7, 3.8Mbps, 32.75s

@@ -1,0 +1,5 @@
+Time: 1667310958, number of blocks: 31, average latency: 16.00, average tps: 998.00, average Mbps: 6.47 
+Time: 1667310968, number of blocks: 35, average latency: 22.00, average tps: 753.82, average Mbps: 4.89 
+Time: 1667310979, number of blocks: 30, average latency: 27.00, average tps: 699.33, average Mbps: 4.53 
+
+871.1, 21.7s
